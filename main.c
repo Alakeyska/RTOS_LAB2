@@ -35,7 +35,7 @@ void vBlinkTaskFunction(void* pvParameters)
 			vTaskDelay(1000);
 			GPIOA->ODR &= ~GPIO_ODR_ODR_5; //led off
 			vTaskDelay(1000);
-			if (j==7) xTaskCreate(vRunningTaskFunction, "running", configMINIMAL_STACK_SIZE, NULL, 4, &running);
+			if (j==7) xTaskCreate(vRunningTaskFunction, "running", configMINIMAL_STACK_SIZE, NULL, uxTaskPriorityGet(blink), &running);
 		}
 		vTaskDelete(running);
 	}
