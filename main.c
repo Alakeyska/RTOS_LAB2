@@ -18,7 +18,7 @@ void vBlinkTaskFunction(void* pvParameters)
 			GPIOA->ODR &= ~GPIO_ODR_ODR_5; //led off
 			vTaskDelay(1000);
 		}
-		vTaskDelay(5000);
+		vTaskDelay(100);
 	}
 }
 
@@ -53,7 +53,7 @@ int main ()
 	InitHardware();
 	
 	xTaskCreate(vBlinkTaskFunction, "blink", configMINIMAL_STACK_SIZE, NULL, 4, NULL);
-	xTaskCreate(vRunningTaskFunction, "runnig", configMINIMAL_STACK_SIZE, NULL, 4, NULL);
+	xTaskCreate(vRunningTaskFunction, "runnig", configMINIMAL_STACK_SIZE, NULL, 8, NULL);
 	vTaskStartScheduler();
 
 	
