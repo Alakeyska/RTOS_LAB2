@@ -17,7 +17,6 @@ int main ()
 	InitHardware();
 	
 	xTaskCreate(vBlinkTaskFunction, "blink", configMINIMAL_STACK_SIZE, NULL, 4, &blink);
-	xTaskCreate(vRunningTaskFunction, "runnig", configMINIMAL_STACK_SIZE, NULL, 8, &running);
 	vTaskStartScheduler();
 	while(1)
 	{
@@ -30,16 +29,15 @@ void vBlinkTaskFunction(void* pvParameters)
 {
 	while(1)
 	{
-		vTaskSuspend(running);
-		for (int m=0;m<8;m++)
+		for (int j=0;j<12;j++)
 		{
 			GPIOA->ODR |= GPIO_ODR_ODR_5; // led on A5
 			vTaskDelay(1000);
 			GPIOA->ODR &= ~GPIO_ODR_ODR_5; //led off
 			vTaskDelay(1000);
+			if (j==7) xTaskCreate(vRunningTaskFunction, "running", configMINIMAL_STACK_SIZE, NULL, 4, &running);
 		}
-		vTaskResume(running);
-		vTaskDelay(2000);
+		vTaskDelete(running);
 	}
 }
 
@@ -48,15 +46,11 @@ void vRunningTaskFunction(void* pvParameters)
 {
 	while(1)
 	{
-		for (int m=0;m<4;m++)
+		for (int i=0;i<8;i++)
 		{
-			for (int i=0;i<8;i++)
-			{
-				GPIOC->ODR = (1 << (15-i)) | (1 << (i));
-				vTaskDelay(1000);
-			}
+			GPIOC->ODR = (1 << (15-i)) | (1 << (i));
+			vTaskDelay(1000);
 		}
-		vTaskDelay(5);
 	}
 }
 
