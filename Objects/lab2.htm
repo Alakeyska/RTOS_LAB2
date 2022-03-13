@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\lab2.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\lab2.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060960: Last Updated: Sun Mar 13 14:28:48 2022
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060960: Last Updated: Sun Mar 13 14:59:01 2022
 <BR><P>
 <H3>Maximum Stack Usage =        168 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -604,7 +604,7 @@ Global Symbols
 <LI><a href="#[6a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;prvAddCurrentTaskToDelayedList
 </UL>
 
-<P><STRONG><a name="[47]"></a>vBlinkTaskFunction</STRONG> (Thumb, 44 bytes, Stack size 0 bytes, main.o(i.vBlinkTaskFunction))
+<P><STRONG><a name="[47]"></a>vBlinkTaskFunction</STRONG> (Thumb, 62 bytes, Stack size 0 bytes, main.o(i.vBlinkTaskFunction))
 <BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = vBlinkTaskFunction &rArr; vTaskDelay &rArr; xTaskResumeAll &rArr; xTaskIncrementTick
 </UL>
 <BR>[Calls]<UL><LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vTaskDelay
@@ -661,7 +661,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[4a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;prvIdleTask
 </UL>
 
-<P><STRONG><a name="[48]"></a>vRunningTaskFunction</STRONG> (Thumb, 40 bytes, Stack size 0 bytes, main.o(i.vRunningTaskFunction))
+<P><STRONG><a name="[48]"></a>vRunningTaskFunction</STRONG> (Thumb, 56 bytes, Stack size 0 bytes, main.o(i.vRunningTaskFunction))
 <BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = vRunningTaskFunction &rArr; vTaskDelay &rArr; xTaskResumeAll &rArr; xTaskIncrementTick
 </UL>
 <BR>[Calls]<UL><LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vTaskDelay

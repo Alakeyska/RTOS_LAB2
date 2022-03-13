@@ -23,3 +23,4 @@
 .\objects\main.o: S:\Programs\keil_pack\ARM\CMSIS-FreeRTOS\10.4.6\Source\include\list.h
 .\objects\main.o: S:\Programs\keil_pack\ARM\CMSIS-FreeRTOS\10.4.6\Source\include\queue.h
 .\objects\main.o: S:\Programs\keil\ARM\ARMCC\Bin\..\include\inttypes.h
+.\objects\main.o: S:\Programs\keil\ARM\ARMCC\Bin\..\include\time.h

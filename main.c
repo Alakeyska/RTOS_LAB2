@@ -4,16 +4,21 @@
 #include "task.h"                       // ARM.FreeRTOS::RTOS:Core
 #include "queue.h"                      // ARM.FreeRTOS::RTOS:Core
 #include "inttypes.h"
+#include <time.h>
 
 
 void vBlinkTaskFunction(void* pvParameters)
 {
 	while(1)
 	{
-		GPIOA->ODR |= GPIO_ODR_ODR_5; // led on A5
-		vTaskDelay(1000);
-		GPIOA->ODR &= ~GPIO_ODR_ODR_5; //led off
-		vTaskDelay(1000);
+		for (int m=0;m<4;m++)
+		{
+			GPIOA->ODR |= GPIO_ODR_ODR_5; // led on A5
+			vTaskDelay(1000);
+			GPIOA->ODR &= ~GPIO_ODR_ODR_5; //led off
+			vTaskDelay(1000);
+		}
+		vTaskDelay(5000);
 	}
 }
 
@@ -21,11 +26,15 @@ void vRunningTaskFunction(void* pvParameters)
 {
 	while(1)
 	{
-		for (int i=0;i<8;i++)
+		for (int m=0;m<4;m++)
 		{
-			GPIOC->ODR = (1 << (15-i)) | (1 << (i));
-			vTaskDelay(2000);
+			for (int i=0;i<8;i++)
+			{
+				GPIOC->ODR = (1 << (15-i)) | (1 << (i));
+				vTaskDelay(1000);
+			}
 		}
+		vTaskDelay(5);
 	}
 }
 
