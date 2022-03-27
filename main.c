@@ -2,62 +2,98 @@
 #include "FreeRTOS.h"                   // ARM.FreeRTOS::RTOS:Core
 #include "FreeRTOSConfig.h"             // ARM.FreeRTOS::RTOS:Config
 #include "task.h"                       // ARM.FreeRTOS::RTOS:Core
-#include "queue.h"                      // ARM.FreeRTOS::RTOS:Core
-#include "inttypes.h"
+#include "semphr.h"
+#include "queue.h"
 
+//xSemaphoreHandle x_INTERRUPT;
 
-void InitHardware();
-void vBlinkTaskFunction();
-void vRunningTaskFunction();
-TaskHandle_t blink, running;
+SemaphoreHandle_t x_INTERRUPT;
+xQueueHandle queue;
 
-
-int main ()
+void exti_init()
 {
-	InitHardware();
+  SYSCFG->EXTICR[3] |= SYSCFG_EXTICR4_EXTI13_PC; 
+  EXTI->RTSR = EXTI_RTSR_TR13;                
+  //EXTI->PR = EXTI_PR_PR13;                      
+  EXTI->IMR = EXTI_IMR_MR13;                  
+  NVIC_EnableIRQ(EXTI15_10_IRQn);              
+  NVIC_SetPriority(EXTI15_10_IRQn,5);
+  __enable_irq(); 
+}
+
+
+void EXTI15_10_IRQHandler(void)
+{
+	BaseType_t needCS = pdFALSE;
+	EXTI->PR = EXTI_PR_PR13;
+	xSemaphoreGiveFromISR(x_INTERRUPT, &needCS);
+	if(needCS == pdTRUE)
+	{
+		portYIELD_FROM_ISR(needCS);
+	}
+}
+
+void IST(void *pvParams)
+{
+  int mode = 0;
+	while(1)
+	{
+		if((xSemaphoreTake(x_INTERRUPT, portMAX_DELAY)) == pdPASS)
+			{
+				  mode=!mode;
+				  xQueueSendToFrontFromISR(queue,&mode,0);
+			}
+	}
+}
+
+
+
+void vTask1(void *pvParams)
+{
+	int mode = 0;
+	while(1)
+	{
+		xQueueReceive(queue,&mode,0);
+		if(mode)
+		{
+			GPIOA->ODR |= GPIO_ODR_ODR_5;//led is 
+			vTaskDelay(250);
+			GPIOA->ODR &= ~(GPIO_ODR_ODR_5);//led is 
+			vTaskDelay(250);
+		}
+		else
+		{
+			GPIOA->ODR |= GPIO_ODR_ODR_6;//led is 
+			vTaskDelay(50);
+			GPIOA->ODR &= ~(GPIO_ODR_ODR_6);//led is 
+			vTaskDelay(50);
+		}
+	}
+}
 	
-	xTaskCreate(vBlinkTaskFunction, "blink", configMINIMAL_STACK_SIZE, NULL, 4, &blink);
-	vTaskStartScheduler();
+
+
+
+int main()
+{
+	RCC->AHB1ENR |=RCC_AHB1ENR_GPIOAEN; //gpio is on
+	RCC->AHB1ENR |=RCC_AHB1ENR_GPIOCEN;
+	GPIOA->MODER |= GPIO_MODER_MODER5_0; //5 OUTPUT
+	RCC->APB2ENR |= RCC_APB2ENR_SYSCFGEN;
+	exti_init();
+	queue = xQueueCreate(16,sizeof(int));
+	x_INTERRUPT = xSemaphoreCreateBinary();
+	if(x_INTERRUPT != NULL)
+	{
+		xTaskCreate(IST, "interrupt", configMINIMAL_STACK_SIZE, NULL, 4, NULL);
+		xTaskCreate(vTask1, "flash", configMINIMAL_STACK_SIZE, NULL, 2, NULL);
+
+		vTaskStartScheduler();
+	}
+		
+	
 	while(1)
 	{
 
 	}
-}
-
-
-void vBlinkTaskFunction(void* pvParameters)
-{
-	while(1)
-	{
-		for (int j=0;j<12;j++)
-		{
-			GPIOA->ODR |= GPIO_ODR_ODR_5; // led on A5
-			vTaskDelay(1000);
-			GPIOA->ODR &= ~GPIO_ODR_ODR_5; //led off
-			vTaskDelay(1000);
-			if (j==7) xTaskCreate(vRunningTaskFunction, "running", configMINIMAL_STACK_SIZE, NULL, uxTaskPriorityGet(blink), &running);
-		}
-		vTaskDelete(running);
-	}
-}
-
-
-void vRunningTaskFunction(void* pvParameters)
-{
-	while(1)
-	{
-		for (int i=0;i<8;i++)
-		{
-			GPIOC->ODR = (1 << (15-i)) | (1 << (i));
-			vTaskDelay(1000);
-		}
-	}
-}
-
-
-void InitHardware()
-{
-	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;  //razreshenie raboti ustroistv
-	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN;
-	GPIOA->MODER |= GPIO_MODER_MODER5_0; //00 - input, 01 - out, 10 - alt func, 11 - analog input
 }

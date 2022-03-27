@@ -21,5 +21,5 @@
 .\objects\main.o: S:\Programs\keil_pack\ARM\CMSIS-FreeRTOS\10.4.6\Source\include\mpu_wrappers.h
 .\objects\main.o: S:\Programs\keil_pack\ARM\CMSIS-FreeRTOS\10.4.6\Source\include\task.h
 .\objects\main.o: S:\Programs\keil_pack\ARM\CMSIS-FreeRTOS\10.4.6\Source\include\list.h
+.\objects\main.o: S:\Programs\keil_pack\ARM\CMSIS-FreeRTOS\10.4.6\Source\include\semphr.h
 .\objects\main.o: S:\Programs\keil_pack\ARM\CMSIS-FreeRTOS\10.4.6\Source\include\queue.h
-.\objects\main.o: S:\Programs\keil\ARM\ARMCC\Bin\..\include\inttypes.h
