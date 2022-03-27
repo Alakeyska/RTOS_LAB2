@@ -53,23 +53,20 @@ void vTask1(void *pvParams)
 	int mode = 0;
 	while(1)
 	{
-		xQueueReceive(queue,&mode,0);
-		if(mode)
+		//xQueueReceive(queue,&mode,0);	
+		for(uint8_t i = 0; i < 8 && mode; i++)
 		{
-			for(uint8_t i = 0; i < 8; i++)
-			{
-				GPIOA->ODR = (1 << (15-i)) | (1 << (i));
-				vTaskDelay(400);
-			}
-		}
-		else
+			GPIOA->ODR = (1 << (15-i)) | (1 << (i));
+			vTaskDelay(400);
+			xQueueReceive(queue,&mode,0);
+		}		
+		for(uint8_t i = 8; i > 0 && !mode; i--)
 		{
-			for(uint8_t i = 8; i > 0; i--)
-			{
-				GPIOA->ODR = (1 << (15-i)) | (1 << (i));
-				vTaskDelay(400);
-			}
+			GPIOA->ODR = (1 << (15-i)) | (1 << (i));
+			vTaskDelay(400);
+			xQueueReceive(queue,&mode,0);
 		}
+		
 	}
 }
 	
