@@ -56,23 +56,23 @@ void vTask1(void *pvParams)
 		xQueueReceive(queue,&mode,0);
 		if(mode)
 		{
-			GPIOA->ODR |= GPIO_ODR_ODR_5;//led is 
-			vTaskDelay(250);
-			GPIOA->ODR &= ~(GPIO_ODR_ODR_5);//led is 
-			vTaskDelay(250);
+			for(uint8_t i = 0; i < 8; i++)
+			{
+				GPIOA->ODR = (1 << (15-i)) | (1 << (i));
+				vTaskDelay(400);
+			}
 		}
 		else
 		{
-			GPIOA->ODR |= GPIO_ODR_ODR_6;//led is 
-			vTaskDelay(50);
-			GPIOA->ODR &= ~(GPIO_ODR_ODR_6);//led is 
-			vTaskDelay(50);
+			for(uint8_t i = 8; i > 0; i--)
+			{
+				GPIOA->ODR = (1 << (15-i)) | (1 << (i));
+				vTaskDelay(400);
+			}
 		}
 	}
 }
 	
-
-
 
 int main()
 {
